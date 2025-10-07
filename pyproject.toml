@@ -1,0 +1,261 @@
+﻿# ============================================================================
+# 📦 BUILD SYSTEM
+# ============================================================================
+# Uses setuptools with setuptools-scm for automatic versioning from Git tags
+
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# ============================================================================
+# 📋 PROJECT METADATA
+# ============================================================================
+
+[project]
+name = "py-ia-rom-logger"
+dynamic = ["version"]  # Version automatically managed by setuptools-scm
+description = "Python project description"
+readme = "docs/README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+  { name = "Yharon Coutinho", email = "coutinho@ia-rom.com" }
+]
+keywords = [
+  "python",
+  "automation",
+  "library"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+# Core dependencies for production
+dependencies = [
+  # Add your production dependencies here
+  # "requests>=2.31.0",
+  # "pydantic>=2.0.0",
+]
+
+# Development dependencies
+[project.optional-dependencies]
+dev = [
+  # Testing
+  "pytest>=8.0.0",
+  "pytest-cov>=4.1.0",
+  "pytest-asyncio>=0.23.0",
+
+  # Linting & Formatting (Ruff replaces Black, Flake8, isort, Pylint)
+  "ruff>=0.3.0",
+
+  # Type checking
+  "mypy>=1.8.0",
+
+  # Task runner
+  "poethepoet>=0.25.0",
+
+  # Utilities
+  "python-dotenv>=1.0.0",
+]
+
+# Project URLs
+[project.urls]
+Homepage = "https://github.com/Yharon/py-ia-rom-logger"
+Repository = "https://github.com/Yharon/py-ia-rom-logger"
+Changelog = "https://github.com/Yharon/py-ia-rom-logger/blob/main/CHANGELOG.md"
+Documentation = "https://github.com/Yharon/py-ia-rom-logger#readme"
+
+# ============================================================================
+# 🔧 SETUPTOOLS CONFIGURATION
+# ============================================================================
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["py_ia_rom_logger*"]
+exclude = [
+  "scripts*",
+  "tests*",
+  "docs*",
+]
+
+# ============================================================================
+# 📌 VERSION MANAGEMENT (setuptools-scm)
+# ============================================================================
+# Automatically extracts version from Git tags
+# Example: tag v1.2.3 → version 1.2.3
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"  # Auto-increment dev versions
+local_scheme = "no-local-version"  # Clean version strings for PyPI
+
+# ============================================================================
+# 🔍 RUFF - Linting & Formatting
+# ============================================================================
+# Ruff replaces: Black, Flake8, isort, Pylint, pydocstyle, pyupgrade
+
+[tool.ruff]
+# Python version target
+target-version = "py312"
+
+# Line length (Black-compatible)
+line-length = 88
+
+# File/directory exclusions
+exclude = [
+  ".git",
+  ".venv",
+  "venv",
+  "__pycache__",
+  "build",
+  "dist",
+  "*.egg-info",
+  ".pytest_cache",
+  ".mypy_cache",
+  ".ruff_cache",
+]
+
+# Linting rules
+[tool.ruff.lint]
+# Enable specific rule sets (Ruff uses Flake8 codes)
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # Pyflakes
+  "I",   # isort (import sorting)
+  "N",   # pep8-naming
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
+  "RUF", # Ruff-specific rules
+]
+
+# Ignore specific rules
+ignore = [
+  "E501",  # Line too long (handled by formatter)
+  "B008",  # Do not perform function call in argument defaults
+]
+
+# Allow fix for all enabled rules (when `--fix` is used)
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when prefixed with underscore
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Import sorting configuration (isort-compatible)
+[tool.ruff.lint.isort]
+known-first-party = ["py_ia_rom_logger"]
+force-single-line = false
+lines-after-imports = 2
+
+# Formatting configuration (Black-compatible)
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+# ============================================================================
+# 🧪 PYTEST CONFIGURATION
+# ============================================================================
+
+[tool.pytest.ini_options]
+# Test discovery patterns
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Command-line options (applied automatically)
+addopts = [
+  "--verbose",
+  "--strict-markers",
+  "--strict-config",
+  "--cov=py_ia_rom_logger",
+  "--cov-report=term-missing:skip-covered",
+  "--cov-report=html",
+  "--cov-report=xml",
+]
+
+# Markers for test categorization
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "integration: marks tests as integration tests",
+  "unit: marks tests as unit tests",
+]
+
+# ============================================================================
+# 📊 COVERAGE CONFIGURATION
+# ============================================================================
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = [
+  "*/tests/*",
+  "*/test_*.py",
+  "*/__pycache__/*",
+  "*/site-packages/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+  "pragma: no cover",
+  "def __repr__",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "@abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+# ============================================================================
+# 🤖 MYPY - Type Checking
+# ============================================================================
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false  # Set to true for strict type checking
+ignore_missing_imports = true
+
+# ============================================================================
+# ⚡ POE THE POET - Task Runner
+# ============================================================================
+# Usage: poe <task_name>
+
+[tool.poe.tasks]
+# Linting & Formatting
+lint = "ruff check src tests"
+format = "ruff format src tests"
+fix = "ruff check --fix src tests"
+
+# Testing
+test = "pytest"
+test-cov = "pytest --cov"
+test-fast = "pytest -m 'not slow'"
+
+# Type checking
+typecheck = "mypy src"
+
+# Combined checks (run before commit)
+check = ["lint", "typecheck", "test"]
+
+# Clean build artifacts
+clean = """
+  rm -rf build dist *.egg-info .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
+"""
+
