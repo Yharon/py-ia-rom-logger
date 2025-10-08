@@ -15,13 +15,15 @@ def now() -> datetime:
 
 @dataclass
 class SystemInfoHelper:
-    """
-    Classe responsável por coletar e armazenar informações do sistema.
-    Atributos:
-        hostname (str): Nome do host do sistema.
-        username (str): Nome do usuário atual.
-        platform (str): Informações da plataforma do sistema.
-        timestamp (datetime): Data e hora atual do sistema.
+    """System information collector and holder.
+
+    Captures and stores essential system metadata for logging context.
+
+    Attributes:
+        hostname: System hostname.
+        username: Current user name.
+        platform: Platform information string.
+        timestamp: Current system datetime with configured timezone.
     """
 
     hostname: str = field(default_factory=gethostname)
@@ -44,13 +46,12 @@ class SystemInfoHelper:
 
     @property
     def to_json(self) -> str:
-        """Converte as informações do sistema para JSON.
-        Returns
-        -------
-        str
-            Representação JSON das informações do sistema.
+        """Convert system information to JSON format.
+
+        Returns:
+            str: JSON representation of system info.
         """
         data_: dict[str, Any] = asdict(self)
-        # timestamp is not serializable, convert manually
+        # 🔧 Implementation: Convert datetime to ISO string for JSON compatibility
         data_["timestamp"] = self.timestamp.isoformat()
         return json_dumps(data_, ensure_ascii=False, indent=2)

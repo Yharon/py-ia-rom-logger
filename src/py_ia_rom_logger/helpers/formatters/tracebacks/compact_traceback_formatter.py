@@ -1,19 +1,16 @@
-"""
-CompactTracebackFormatter
--------------------------
+"""Compact traceback formatter for JSON logging.
 
-Gera uma representação enxuta do traceback para ser gravada em JSON,
-limitando o número de quadros e exibindo apenas:
+Generates a concise traceback representation limiting frame count
+and displaying only essential information in format:
 
-    caminho/relativo.py:linha  in funcao
+    path/relative.py:line  in function
     [...]
-    caminho/relativo.py:linha  "código fonte"
+    path/relative.py:line  "source code"
 
-Exemplo padrão (max_frames=8):
-
-use_examples/basic_usage.py:88 in uso_basico_rpa_logger
-use_examples/basic_usage.py:46 in funcao_nivel_1
-use_examples/basic_usage.py:55  "resultado = 10 / 0"
+Example (max_frames=8):
+    examples/usage.py:88 in basic_usage
+    examples/usage.py:46 in level_1
+    examples/usage.py:55  "result = 10 / 0"
 """
 
 from __future__ import annotations
@@ -24,43 +21,36 @@ from typing import List, Tuple
 
 
 class CompactTracebackFormatter:
-    """Formata traceback de forma resumida.
+    """Compact traceback formatter for concise exception logging.
 
-    Parameters
-    ----------
-    max_frames : int, default 8
-        Número máximo de quadros que serão incluídos (contando de baixo para cima).
-    base_dir : str | None
-        Diretório base para tornar caminhos relativos.
-        Se None, usa ``os.getcwd()``.
+    Args:
+        max_frames: Maximum number of frames to include (counting from bottom up).
+            Defaults to 8.
+        base_dir: Base directory for relative paths. Defaults to current directory.
     """
 
     def __init__(self, max_frames: int = 8, base_dir: str | None = None) -> None:
         self.max_frames = max_frames
         self.base_dir = base_dir or os.getcwd()
 
-    # --------------------------------------------------------------------- #
-    # API pública
-    # --------------------------------------------------------------------- #
     def format(self, exc_info) -> Tuple[str, str, str]:
-        """
-        Recebe ``exc_info`` (``sys.exc_info()``) e devolve:
+        """Format exception info into compact traceback representation.
 
-        Returns
-        -------
-        traceback_str : str
-            Traceback formatado, linhas separadas por ``\n `` (note o espaço).
-        exc_name : str
-            Nome da exceção (ex.: ``ZeroDivisionError``).
-        exc_msg : str
-            Mensagem/descrição da exceção.
+        Args:
+            exc_info: Exception info tuple from sys.exc_info().
+
+        Returns:
+            tuple: (traceback_str, exc_name, exc_msg) where:
+                - traceback_str: Formatted traceback with lines separated by newline+space.
+                - exc_name: Exception name (e.g., 'ZeroDivisionError').
+                - exc_msg: Exception message/description.
         """
         exc_type, exc_val, tb = exc_info
         exc_name = exc_type.__name__ if exc_type else ""
         exc_msg = str(exc_val) if exc_val else ""
 
         frames = traceback.extract_tb(tb)
-        # pega apenas os últimos N quadros (caminho ascendente até a origem)
+        # 🔧 Implementation: Get only last N frames (ascending path to origin)
         frames = frames[-self.max_frames :] if self.max_frames else frames
 
         formatted: List[str] = []
@@ -68,7 +58,7 @@ class CompactTracebackFormatter:
             rel = os.path.relpath(filename, self.base_dir)
             formatted.append(f"{rel}:{lineno} in {func}")
 
-        # último quadro → inclui linha de código
+        # Last frame includes source code line
         if frames:
             filename, lineno, func, text = frames[-1]
             rel = os.path.relpath(filename, self.base_dir)

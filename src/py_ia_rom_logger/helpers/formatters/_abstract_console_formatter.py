@@ -9,36 +9,43 @@ from rich.console import ConsoleRenderable
 
 @dataclass
 class AbstractConsoleCustomFormatter(logging.Formatter, ABC):
-    """
-    Modelo de formatação personalizada para logs Rich.
-    Este modelo define a estrutura básica para formatação de logs,
-    incluindo temas e formatação de mensagens.
+    """Abstract base class for custom Rich log formatters.
 
-    Attributes
-    ----------
-    fmt : str, optional
-        String de formato para logs
-    datefmt : str, optional
-        String de formato para datas
+    Defines the interface for Rich-based log formatting including
+    themes, messages, exceptions, and arguments.
+
+    Attributes:
+        fmt: Format string for logs.
+        datefmt: Format string for dates.
     """
 
     fmt: Optional[str] = field(default=None)
     datefmt: Optional[str] = field(default=None)
 
     def __post_init__(self):
-        """Inicializa o Formatter pai após criação do dataclass."""
+        """Initialize parent Formatter after dataclass creation."""
         super().__init__(fmt=self.fmt, datefmt=self.datefmt, style="{")
 
     @abstractmethod
     def format_level(self, record: logging.LogRecord) -> str:
-        """
-        Formata o nível de log.
+        """Format the log level with styling.
+
+        Args:
+            record: Log record to format.
+
+        Returns:
+            str: Formatted log level string.
         """
 
     @abstractmethod
     def format_message(self, record: logging.LogRecord) -> str:
-        """
-        Formata a mensagem de log.
+        """Format the log message with styling.
+
+        Args:
+            record: Log record to format.
+
+        Returns:
+            str: Formatted message string.
         """
 
     @abstractmethod
@@ -49,12 +56,22 @@ class AbstractConsoleCustomFormatter(logging.Formatter, ABC):
             | tuple[None, None, None]
         ),
     ) -> tuple[str, str]:
-        """
-        Formata a exceção do log.
+        """Format the exception information.
+
+        Args:
+            ei: Exception info tuple from sys.exc_info().
+
+        Returns:
+            tuple[str, str]: (formatted_traceback, exception_title).
         """
 
     @abstractmethod
     def format_arguments(self, record: logging.LogRecord) -> ConsoleRenderable:
-        """
-        Formata os argumentos do log.
+        """Format the log arguments with Rich rendering.
+
+        Args:
+            record: Log record with arguments.
+
+        Returns:
+            ConsoleRenderable: Rich renderable object.
         """

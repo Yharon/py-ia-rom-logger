@@ -18,7 +18,7 @@ else:
 from .config import Settings
 
 
-# Instância global das configurações
+# 🏗️ Architecture: Global singleton instance of settings
 SETTINGS = Settings(PROJECT_ROOT_=Path(PROJECT_ROOT), OS_WINDOWS=OS_WINDOWS)
 
 __all__ = [

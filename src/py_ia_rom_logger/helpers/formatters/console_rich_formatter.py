@@ -1,14 +1,7 @@
-"""Formatter personalizado para logs com formatação Rich.
+"""Rich formatter for console log output.
 
-Este módulo contém a implementação do formatter que aplica formatação
-Rica às mensagens de log, incluindo cores, estilos e estruturação
-visual das informações.
-
-Examples
---------
->>> from py_ia_rom_logger.formatters.rich_formatter import RichFormatter
->>> formatter = RichFormatter()
->>> handler.setFormatter(formatter)
+Provides Rich-formatted log messages with colors, styles,
+and visual structuring for enhanced readability.
 """
 import logging
 from types import TracebackType
@@ -26,17 +19,10 @@ from .tracebacks.console_rich_traceback_formatter import TracebackRichFormatter
 
 
 class RichFormatter(AbstractConsoleCustomFormatter):
-    """
-    Formatter personalizado com formatação Rich para logs.
+    """Rich-based formatter for enhanced console logging.
 
-    Este formatter aplica formatação Rich às mensagens de log,
-    incluindo cores específicas para cada nível, formatação de
-    timestamp e estruturação visual das informações.
-
-    Examples
-    --------
-    >>> formatter = RichFormatter(console)
-    >>> handler.setFormatter(formatter)
+    Applies Rich styling to log messages including level-specific colors,
+    timestamp formatting, and visual information structuring.
     """
 
     def __init__(self) -> None:
@@ -46,17 +32,13 @@ class RichFormatter(AbstractConsoleCustomFormatter):
         self._traceback = TracebackRichFormatter()
 
     def format_level(self, record: logging.LogRecord) -> str:
-        """Retorna o código de nível de 4 letras com cor.
+        """Format log level with 4-letter code and color.
 
-        Parameters
-        ----------
-        record : logging.LogRecord
-            Registro de log
+        Args:
+            record: Log record to format.
 
-        Returns
-        -------
-        str
-            Código de nível de 4 letras com cor Rich
+        Returns:
+            str: 4-letter level code with Rich color markup.
         """
         level_name = record.levelname
         short_name = self._console_model.level_map.get(level_name, level_name[:4])
@@ -66,13 +48,13 @@ class RichFormatter(AbstractConsoleCustomFormatter):
         return Text(short_name, style=color).markup
 
     def format_message(self, record: logging.LogRecord) -> str:
-        """
-        Formata a mensagem do log.
+        """Format log message with level-specific styling.
 
-        Returns
-        -------
-        str
-            Mensagem formatada com Rich markup
+        Args:
+            record: Log record to format.
+
+        Returns:
+            str: Formatted message with Rich markup.
         """
         message = escape(record.getMessage())
         color = self._console_model.rich_theme.styles.get(
@@ -81,20 +63,13 @@ class RichFormatter(AbstractConsoleCustomFormatter):
         return Text(message, style=color).markup
 
     def format_arguments(self, record: logging.LogRecord) -> ConsoleRenderable:
-        """
-        Formata os argumentos do log.
+        """Format log arguments as Rich JSON panel.
 
-        Parameters
-        ----------
-        message : str
-            Mensagem base do log
-        args : Any
-            Argumentos passados ao log (pode ser tupla, dict, etc.)
+        Args:
+            record: Log record with arguments.
 
-        Returns
-        -------
-        tuple[str, Any]
-            Mensagem e argumentos formatados com Rich markup
+        Returns:
+            ConsoleRenderable: Group with message and JSON panel.
         """
         renderables: list[ConsoleRenderable] = []
         message = escape(record.msg)
@@ -128,18 +103,14 @@ class RichFormatter(AbstractConsoleCustomFormatter):
             | tuple[None, None, None]
         ),
     ) -> tuple[str, str]:
-        """
-        Formata a exceção do log, se houver.
+        """Format exception information with Rich traceback.
 
-        Parameters
-        ----------
-        record : logging.LogRecord
-            Registro de log
+        Args:
+            ei: Exception info tuple from sys.exc_info().
 
-        Returns
-        -------
-        str
-            Traceback formatado com Rich markup, ou string vazia se não houver exceção
+        Returns:
+            tuple[str, str]: (formatted_traceback, exception_title)
+                or ("", "") if no exception.
         """
         if not ei or ei == (None, None, None):
             return "", ""

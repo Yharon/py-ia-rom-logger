@@ -6,9 +6,7 @@ from py_ia_rom_logger.services import FileManagerService
 
 
 class AvailableFileFormatters(Enum):
-    """
-    Formatação disponível para arquivos de log
-    """
+    """Available formatters for file logging."""
 
     JSON = SafeJsonFormatter(
         fmt=(
@@ -22,11 +20,16 @@ class AvailableFileFormatters(Enum):
 
 
 class JsonCustomFileHandler(logging.FileHandler):
+    """Custom file handler with JSON formatting and rotation."""
 
     _file_manager = FileManagerService()
 
     def __init__(self, **kwargs):
+        """Initialize JsonCustomFileHandler.
 
+        Args:
+            **kwargs: Additional arguments passed to FileHandler.
+        """
         kwargs.setdefault("filename", self._create_log_path_name())
         kwargs.setdefault("mode", "w")
         kwargs.setdefault("encoding", "utf-8")
@@ -37,8 +40,14 @@ class JsonCustomFileHandler(logging.FileHandler):
     def create_file_handler(
         cls, formatter: AvailableFileFormatters, **kwargs
     ) -> "JsonCustomFileHandler":
-        """
-        Cria uma instância do FileHandler com configurações personalizadas.
+        """Create FileHandler instance with custom configuration.
+
+        Args:
+            formatter: Formatter to use for log messages.
+            **kwargs: Additional arguments passed to FileHandler.
+
+        Returns:
+            JsonCustomFileHandler: Configured handler instance.
         """
         cls._file_manager.cleanup_old_files()
 
@@ -51,8 +60,10 @@ class JsonCustomFileHandler(logging.FileHandler):
         return file_handler
 
     def _create_log_path_name(self) -> str:
-        """
-        Cria o caminho completo do arquivo de log.
+        """Create full log file path.
+
+        Returns:
+            str: Complete path to log file.
         """
         filename = self._file_manager.FILE_LOG.create_log_file_name()
         file_path = self._file_manager.BACKUP_LOG_DIR / filename

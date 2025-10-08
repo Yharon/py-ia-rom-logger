@@ -1,10 +1,12 @@
-"""
-A custom logging library for RPA projects, designed to log messages in JSON format to a file, 
-with support for different log levels and easy integration into existing projects.
+"""Custom logging library for RPA projects with Rich console and JSON file output.
+
+Provides structured logging with:
+- Rich-formatted console output with colors and styling
+- JSON-formatted file logging for analysis
+- Exception tracking with detailed tracebacks
+- Easy integration into existing projects
 """
 from .services import LoggingManager
 
 
-__all__ = [
-    "LoggingManager"
-]
+__all__ = ["LoggingManager"]

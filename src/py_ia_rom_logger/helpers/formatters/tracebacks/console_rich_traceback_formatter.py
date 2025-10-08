@@ -16,11 +16,10 @@ def truncate_string(s, max_length=100):
 
 
 class TracebackRichFormatter:
-    """
-    Formatter Rich com traceback em formato de tabela.
+    """Rich traceback formatter with structured table presentation.
 
-    Apresenta o traceback em uma tabela estruturada
-    para melhor visualização das informações.
+    Formats exception tracebacks in a structured visual format
+    for enhanced readability in console output.
     """
 
     _traceback_lines: list[str]
@@ -44,30 +43,19 @@ class TracebackRichFormatter:
         exc_value: BaseException,
         exc_traceback: TracebackType | None,
     ) -> str:
+        """Create formatted traceback in table format.
+
+        Args:
+            exc_type: Exception type.
+            exc_value: Exception value.
+            exc_traceback: Exception traceback, can be None.
+
+        Returns:
+            str: Formatted traceback as string.
         """
-        Cria traceback em formato de tabela.
-
-        Parameters
-        ----------
-        exc_type : type[BaseException]
-            Tipo da exceção
-        exc_value : BaseException
-            Valor da exceção
-        exc_traceback : TracebackType | None
-            Traceback da exceção, pode ser None se não houver traceback
-
-        Returns
-        -------
-        str
-            Traceback formatado como string
-        """
-
         self._configs(exc_traceback)
-
         self._cabecalho()
-
         self._formata_frames()
-
         self._format_exc_msg(exc_type, exc_value)
 
         return "\n".join(self._traceback_lines)
@@ -75,15 +63,11 @@ class TracebackRichFormatter:
     def _format_exc_msg(
         self, exc_type: type[BaseException], exc_value: BaseException
     ) -> None:
-        """
-        Formata a mensagem de exceção.
+        """Format exception message with styling.
 
-        Parameters
-        ----------
-        exc_type : type[BaseException]
-            Tipo da exceção
-        exc_value : BaseException
-            Valor da exceção
+        Args:
+            exc_type: Exception type.
+            exc_value: Exception value.
         """
         exc_name = exc_type.__name__
         exc_message = str(exc_value)
@@ -96,46 +80,30 @@ class TracebackRichFormatter:
         )
 
     def _configs(self, exc_traceback: TracebackType | None) -> None:
-        """
-        Configurações iniciais do traceback.
-        Define o estilo e outras configurações necessárias.
-        """
+        """Initialize traceback configuration."""
         self._traceback_lines = []
-
         self._tb_list = tb_module.extract_tb(exc_traceback)
         self._last_frames = (
             self._tb_list[-SETTINGS.TRACEBACKS_MAX_FRAMES :] if self._tb_list else []
         )
 
     def _cabecalho(self) -> None:
-        """
-        Adiciona o cabeçalho do traceback.
-        """
+        """Add traceback header."""
         self._traceback_lines.append("")
 
     def _formata_frames(self) -> None:
-        """
-        Formata os frames do traceback.
-        """
+        """Format all traceback frames."""
         for i, frame in enumerate(self._last_frames):
             self._info_file(frame)
             self._info_lines(frame, i)
 
     def _info_lines(self, frame: tb_module.FrameSummary, frame_num: int) -> None:
+        """Format frame line information.
+
+        Args:
+            frame: Frame summary from traceback.
+            frame_num: Frame index number.
         """
-        Obtém informações da linha do frame.
-
-        Parameters
-        ----------
-        frame : tb_module.FrameSummary
-            Frame do traceback
-
-        Returns
-        -------
-        str
-            Informações formatadas da linha
-        """
-
         if frame.line and frame.lineno:
             lineno = frame.lineno
 
@@ -145,28 +113,22 @@ class TracebackRichFormatter:
                 self._format_frame_func(frame)
 
     def _format_frame_func(self, frame: tb_module.FrameSummary) -> None:
-        """
-        Formata a função do frame.
+        """Format frame function name.
 
-        Parameters
-        ----------
-        frame : tb_module.FrameSummary
-            Frame do traceback
+        Args:
+            frame: Frame summary from traceback.
         """
-
         self._traceback_lines.append(
             f'{Text("    in", style="dim").markup} '
             f'{Text(frame.name, style="green").markup}'
         )
 
     def _format_frame_lines(self, frame: tb_module.FrameSummary, lineno: int) -> None:
-        """
-        Formata as linhas do frame com contexto.
+        """Format frame lines with context.
 
-        Parameters
-        ----------
-        frame : tb_module.FrameSummary
-            Frame do traceback
+        Args:
+            frame: Frame summary from traceback.
+            lineno: Line number of the error.
         """
         context = SETTINGS.TRACEBACKS_CONTEXT_LINES
         start = max(1, lineno - context)
@@ -188,41 +150,33 @@ class TracebackRichFormatter:
                 )
 
     def _format_indentation(self, line: str) -> str:
-        """
-        Formata a indentação do frame.
+        """Format frame indentation with visual guides.
 
-        Parameters
-        ----------
-        line : str
-            Linha do frame a ser formatada
-        Returns
-        -------
-        str
-            Linha formatada com a indentação correta
+        Args:
+            line: Frame line to format.
+
+        Returns:
+            str: Formatted line with proper indentation.
         """
         INDENT_SPACES = 4
 
-        # Calcula os espaços de indentação
+        # Calculate indentation spaces
         leading_spaces = len(line) - len(line.lstrip(" "))
 
-        # Calcula quantos grupos de indentação existem e os espaços restantes
+        # Calculate indentation groups and leftover spaces
         groups = leading_spaces // INDENT_SPACES
         leftover = leading_spaces % INDENT_SPACES
 
-        # Para cada grupo, substitui '    ' por '│   '
+        # 🎨 Visual: Replace each indent group with vertical bar guide
         vertical_indent = ("│" + " " * (INDENT_SPACES - 1)) * groups + " " * leftover
 
-        # Concatena a indentação modificada com o restante da linha (sem os espaços à esquerda originais)
         return vertical_indent + line.lstrip().rstrip()
 
     def _info_file(self, frame: tb_module.FrameSummary) -> None:
-        """
-        Obtém informações do arquivo do frame e adiciona ao traceback.
+        """Format and add frame file information to traceback.
 
-        Parameters
-        ----------
-        frame : tb_module.FrameSummary
-            Frame do traceback
+        Args:
+            frame: Frame summary from traceback.
         """
         file_path = Path(frame.filename)
         filename = file_path.name
@@ -238,12 +192,9 @@ class TracebackRichFormatter:
 
     @property
     def exc_title(self) -> str:
-        """
-        Obtém o título da exceção formatado.
+        """Get formatted exception title.
 
-        Returns
-        -------
-        str
-            Título da exceção formatado com Rich markup
+        Returns:
+            str: Exception title with Rich markup.
         """
         return self._exc_title.markup

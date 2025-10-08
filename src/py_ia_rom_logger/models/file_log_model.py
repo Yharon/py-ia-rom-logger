@@ -10,56 +10,36 @@ from . import LogModel
 
 @dataclass
 class FileLogModel(LogModel):
-    """
-    Modelo de log para saída em arquivos.
+    """Log model for file output with naming and emoji stripping.
 
-    Este modelo estende LogModel para fornecer funcionalidades específicas
-    para logs em arquivos, incluindo formatação de nomes de arquivos e
-    gerenciamento de backups.
+    Extends LogModel to provide file-specific functionality including
+    log file naming patterns and emoji sanitization for legacy systems.
 
-    Attributes
-    ----------
-    _robo_id : str
-        Identificador do robô, usado para nomear arquivos de log.
-    _part_01 : str
-        Parte fixa do nome do arquivo de log, geralmente um prefixo.
-    _nome_completo : str
-        Nome completo do arquivo de log, composto pelo robo_id e part_01.
-    BACKUP_LOG_NAME : str
-        Nome do arquivo de log de backup.
-    FORMAT_DATE_NAME : str
-        Formato de data usado nos nomes dos arquivos de log.
-    FORMAT_TIME_NAME : str
-        Formato de hora usado nos nomes dos arquivos de log.
-    _EMOJI_RE : re.Pattern
-        Expressão regular para remover emojis e caracteres especiais
-        de mensagens de log, garantindo compatibilidade com sistemas legados.
-
-    Methods
-    -------
-    create_log_file_name(date_: Optional[datetime] = None) -> str
-        Cria o nome do arquivo de log com base no formato definido.
-    strip_emojis(text: str) -> str
-        Remove emojis e símbolos Unicode decorativos do texto,
+    Attributes:
+        BACKUP_LOG_NAME: Base name for backup log files.
+        FORMAT_DATE_NAME: Date format for log file names.
+        FORMAT_TIME_NAME: Time format for log file names.
+        _EMOJI_RE: Regex pattern to remove emojis and special Unicode chars.
     """
 
     _robo_id = SETTINGS.ROBO_ID
     _part_01 = "01"
-    _nome_completo: str = field(init=False, default=f"{_robo_id}_{_part_01}")
+    _full_name: str = field(init=False, default=f"{_robo_id}_{_part_01}")
 
-    BACKUP_LOG_NAME: str = field(init=False, default=_nome_completo)
+    BACKUP_LOG_NAME: str = field(init=False, default=_full_name)
     FORMAT_DATE_NAME: str = field(init=False, default="%Y%m%d")
     FORMAT_TIME_NAME: str = field(init=False, default="%H%M%S")
 
+    # 🔧 Implementation: Regex to remove emojis for legacy system compatibility
     _EMOJI_RE: re_Pattern = field(
         init=False,
         default=re_compile(
-            "["  # início do conjunto de caracteres
-            "\U0001f600-\U0001f64f"  # emoticons (rostos e gestos)
-            "\U0001f300-\U0001f5ff"  # símbolos & pictogramas diversos
-            "\U0001f680-\U0001f6ff"  # transporte e símbolos de mapa
-            "\U0001f1e0-\U0001f1ff"  # bandeiras (regional indicator symbols)
-            "\u2600-\u26ff"  # símbolos diversos (weather, zodiac, etc.)
+            "["
+            "\U0001f600-\U0001f64f"  # emoticons (faces and gestures)
+            "\U0001f300-\U0001f5ff"  # symbols & miscellaneous pictographs
+            "\U0001f680-\U0001f6ff"  # transport & map symbols
+            "\U0001f1e0-\U0001f1ff"  # flags (regional indicator symbols)
+            "\u2600-\u26ff"  # miscellaneous symbols (weather, zodiac, etc.)
             "\u2700-\u27bf"  # dingbats (decorative symbols)
             "]+",
             flags=re_UNICODE,
@@ -67,18 +47,18 @@ class FileLogModel(LogModel):
     )
 
     def create_log_file_name(self, date_: Optional[datetime] = None) -> str:
-        """
-        Cria o nome do arquivo de log com base no formato definido.
+        """Create log filename based on defined format pattern.
 
-        Returns
-        -------
-        str
-            Nome do arquivo de log formatado.
+        Args:
+            date_: Date to use for filename, defaults to current datetime.
+
+        Returns:
+            str: Formatted log filename (e.g., 'robot_01_20240115_143025_01.log').
         """
         if date_ is None:
             date_ = datetime.now(SETTINGS.TZ)
 
-        name = self._nome_completo
+        name = self._full_name
         date_name = date_.strftime(self.FORMAT_DATE_NAME)
         hour_name = date_.strftime(self.FORMAT_TIME_NAME)
         round_id = SETTINGS.ROUND_ID
@@ -86,28 +66,21 @@ class FileLogModel(LogModel):
         return f"{name}_{date_name}_{hour_name}_{round_id}.log"
 
     def strip_emojis(self, text: str) -> str:
-        """
-        Remove emojis e símbolos Unicode decorativos do texto.
+        """Remove emojis and decorative Unicode symbols from text.
 
-        Função essencial para RPA que integra com sistemas legados
-        que não suportam emojis ou caracteres Unicode especiais.
+        Essential for RPA systems integrating with legacy platforms
+        that don't support emojis or special Unicode characters.
 
-        Parameters
-        ----------
-        text : str
-            Texto a ser sanitizado
+        Args:
+            text: Text to sanitize.
 
-        Returns
-        -------
-        str
-            Texto sem emojis, ou string vazia se input for None/vazio
+        Returns:
+            str: Text without emojis, or empty string if input is None/empty.
 
-        Examples
-        --------
-        >>> _strip_emojis("Usuário processado com sucesso! 😊✅")
-        'Usuário processado com sucesso! '
-
-        >>> _strip_emojis("Erro crítico ❌🚨")
-        'Erro crítico '
+        Examples:
+            >>> model.strip_emojis("User processed! 😊✅")
+            'User processed! '
+            >>> model.strip_emojis("Critical error ❌🚨")
+            'Critical error '
         """
         return self._EMOJI_RE.sub("", text) if text else ""

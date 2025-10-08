@@ -11,8 +11,10 @@ from .decorators import singleton
 
 
 def get_prod_env_static() -> bool:
-    """
-    Verifica se o ambiente é de produção.
+    """Check if the current environment is production.
+
+    Returns:
+        bool: True if ENV='PROD' in .env file, False otherwise.
     """
     env_path: Path = Path(PROJECT_ROOT) / "configs" / ".env"
     if env_path.exists():
@@ -24,9 +26,10 @@ def get_prod_env_static() -> bool:
 
 @singleton
 def get_timezone() -> ZoneInfo:
-    """
-    Obtém o fuso horário configurado na variável de ambiente TIMEZONE.
-    Se não estiver definido, usa o fuso horário padrão "America/Sao_Paulo".
+    """Get the configured timezone from environment variable.
+
+    Returns:
+        ZoneInfo: Timezone from TIMEZONE env var, defaults to 'America/Sao_Paulo'.
     """
     tz_name: str = getenv("TIMEZONE", "America/Sao_Paulo")
     return ZoneInfo(tz_name)
@@ -35,14 +38,27 @@ def get_timezone() -> ZoneInfo:
 @singleton
 @dataclass
 class Settings:
-    """
-    Classe de configurações do projeto.
+    """Application configuration settings.
 
-    Centraliza todas as configurações e variáveis de ambiente
-    necessárias para o funcionamento do sistema.
+    Centralizes all configuration and environment variables needed
+    for the system to function properly.
+
+    Attributes:
+        PROJECT_ROOT_: Root directory path of the project.
+        OS_WINDOWS: True if running on Windows, False otherwise.
+        PROD_ENV: True if environment is production.
+        LOG_DIR: Directory path for log files.
+        TZ: Configured timezone.
+        TIMESTAMP_FORMAT: Time format for log timestamps.
+        MAX_FILES: Maximum number of backup log files to keep.
+        ROBO_ID: Robot identifier from environment.
+        ROUND_ID: Round identifier from environment.
+        TRACEBACKS_MAX_FRAMES: Maximum frames to show in tracebacks.
+        TRACEBACKS_EXTRA_LINES: Extra context lines around traceback.
+        TRACEBACKS_CONTEXT_LINES: Context lines for each frame.
     """
 
-    # Variáveis de ambiente
+    # Environment variables
     PROJECT_ROOT_: Path = field(init=True)
     OS_WINDOWS: bool = field(init=True)
     PROD_ENV: bool = field(default_factory=get_prod_env_static)
@@ -50,10 +66,10 @@ class Settings:
     # Paths
     LOG_DIR: Path = field(init=False)
 
-    # Data e hora
+    # Date and time
     TZ: ZoneInfo = field(init=False, default_factory=get_timezone)
 
-    # Formatos de data e hora
+    # Date and time formats
     TIMESTAMP_FORMAT: str = field(init=False, default="%H:%M:%S")
 
     MAX_FILES: int = field(init=False, default=5)
@@ -86,16 +102,12 @@ class Settings:
 
     @property
     def to_json(self) -> str:
-        """
-        Serializa as configurações para JSON.
-        Converte os campos da classe em um dicionário e serializa
-        para JSON, incluindo o fuso horário como string.
-        Returns
-        -------
-        str
-            Representação JSON das configurações.
+        """Serialize settings to JSON format.
+
+        Returns:
+            str: JSON representation of all settings.
         """
         data_ = asdict(self)
-
+        # 🔧 Implementation: Convert ZoneInfo to string for JSON serialization
         data_["TZ"] = self.TZ.key
         return json_dumps(data_, ensure_ascii=False, indent=2)

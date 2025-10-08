@@ -1,13 +1,7 @@
-"""Gerenciador principal do sistema de logging.
+"""Main logging system manager.
 
-Este módulo contém a classe principal que coordena todos os handlers
-e configurações do sistema de logging, implementando o padrão Singleton.
-
-Examples
---------
->>> from rich_logger.helpers.logging_manager import LoggingManager
->>> manager = LoggingManager()
->>> manager.setup_logging()
+Coordinates all handlers and logging system configurations
+using the Singleton pattern.
 """
 
 import threading
@@ -26,11 +20,14 @@ from py_ia_rom_logger.handlers import (
 
 
 def _install_sys_excepthook(logger_: logging.Logger) -> None:
-    """Registra exceções não tratadas no logger."""
+    """Register unhandled exceptions to logger.
 
+    Args:
+        logger_: Logger instance to capture exceptions.
+    """
     def _hook(exc_type, exc_value, exc_tb):
         msg = "Unhandled exception"
-        # Registra interrupções de teclado
+        # Handle keyboard interrupts separately
         if issubclass(exc_type, KeyboardInterrupt):
             msg = "Keyboard interrupt exception"
         logger_.critical(msg, exc_info=(exc_type, exc_value, exc_tb))
@@ -38,8 +35,11 @@ def _install_sys_excepthook(logger_: logging.Logger) -> None:
 
 
 def _install_threading_excepthook(logger_: logging.Logger) -> None:
-    """Para Python ≥3.8: captura exceções em threads."""
+    """Capture thread exceptions (Python ≥3.8).
 
+    Args:
+        logger_: Logger instance to capture thread exceptions.
+    """
     if hasattr(threading, "excepthook"):
         def _thread_hook(args: threading.ExceptHookArgs):  # type: ignore[attr-defined]
             name_ = args.thread.name if args.thread else "MainThread"
@@ -56,24 +56,21 @@ def _install_threading_excepthook(logger_: logging.Logger) -> None:
 @singleton
 @dataclass
 class LoggingManager:
-    """Gerenciador principal do sistema de logging.
+    """Main logging system manager with singleton pattern.
 
-    Esta classe implementa o padrão Singleton para garantir que apenas uma
-    instância do gerenciador seja criada durante toda a execução do programa.
+    Ensures only one manager instance exists throughout program execution.
 
-    Responsabilidades:
-    - Configurar handlers de console, arquivo e HTML
-    - Gerenciar diretórios de log
-    - Limpar arquivos antigos
-    - Coordenar formatadores
+    Responsibilities:
+    - Configure console and file handlers
+    - Manage log directories
+    - Clean old files
+    - Coordinate formatters
+    - Install exception hooks
 
-    Examples
-    --------
-    >>> manager = LoggingManager()
-    >>> manager.setup_logging()
-    >>> # Usar logging normalmente
-    >>> import logging
-    >>> logging.info("Sistema iniciado")
+    Attributes:
+        RICH_HANDLER: Console handler factory.
+        FILE_HANDLER: File handler factory.
+        LOGGER: Root logger instance.
     """
 
     RICH_HANDLER: ConsoleHandler = field(init=False, default_factory=ConsoleHandler)
@@ -89,50 +86,44 @@ class LoggingManager:
         file_formatter: AvailableFileFormatters = AvailableFileFormatters.JSON,
         level: str = "DEBUG",
     ) -> None:
-        """
-        Configura o sistema de logging completo.
+        """Configure complete logging system.
 
-        Cria e configura todos os handlers necessários:
-        - Console handler com Rich formatting
-        - Arquivo de log principal (app.log)
-        - Arquivo MD principal (app.md) com nível DEBUG
-        - Arquivo MD de histórico (timestamped)
+        Creates and configures all necessary handlers:
+        - Console handler with Rich formatting
+        - JSON file handler with rotation
 
-        Examples
-        --------
-        >>> manager = LoggingManager()
-        >>> manager.setup_logging("meu_app.log")
+        Args:
+            console_formatter: Formatter for console output.
+            file_formatter: Formatter for file output.
+            level: Global logging level.
         """
-        # Verifica se já foi configurado
+        # ⚠️ Warning: Skip if already configured to prevent duplicate handlers
         if self.LOGGER.hasHandlers():
             return
 
-        # Cria handlers
+        # Create handlers
         console_handler = self.RICH_HANDLER.create_rich_handler(console_formatter)
         file_handler = self.FILE_HANDLER.create_file_handler(file_formatter)
 
-        # Adiciona handlers ao logger
+        # Add handlers to logger
         self.LOGGER.addHandler(console_handler)
         self.LOGGER.addHandler(file_handler)
 
-        # Define nível global
+        # Set global level
         self.LOGGER.setLevel(level)
 
+        # 🔧 Implementation: Install exception hooks for uncaught exceptions
         _install_sys_excepthook(self.LOGGER)
         _install_threading_excepthook(self.LOGGER)
 
     def get_logger(self, name: Optional[str] = None) -> logging.Logger:
-        """Retorna logger configurado.
+        """Get configured logger instance.
 
-        Parameters
-        ----------
-        name : str, optional
-            Nome do logger, by default None
+        Args:
+            name: Logger name, defaults to root logger.
 
-        Returns
-        -------
-        logging.Logger
-            Logger configurado e pronto para uso
+        Returns:
+            logging.Logger: Configured logger ready for use.
         """
         if name:
             return logging.getLogger(name)
