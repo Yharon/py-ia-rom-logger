@@ -28,12 +28,13 @@ class SafeJsonFormatter(JsonFormatter):
     """
 
     def __init__(self, *args, **kwargs) -> None:
+        # 🔧 Implementation: Extract max_frames before parent init
+        max_frames = kwargs.pop("max_frames", 8)
+
         super().__init__(*args, **kwargs)
 
         self._file_model = FileLogModel()
-        self._tb_formatter = CompactTracebackFormatter(
-            max_frames=kwargs.pop("max_frames", 8)
-        )
+        self._tb_formatter = CompactTracebackFormatter(max_frames=max_frames)
 
     def _sanitize_str(self, txt_: str) -> str:
         """Sanitize string by removing emojis and ensuring UTF-8 encoding.

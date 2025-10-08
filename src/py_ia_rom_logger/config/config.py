@@ -108,6 +108,8 @@ class Settings:
             str: JSON representation of all settings.
         """
         data_ = asdict(self)
-        # 🔧 Implementation: Convert ZoneInfo to string for JSON serialization
+        # 🔧 Implementation: Convert non-serializable types for JSON
         data_["TZ"] = self.TZ.key
+        data_["PROJECT_ROOT_"] = str(self.PROJECT_ROOT_)
+        data_["LOG_DIR"] = str(self.LOG_DIR)
         return json_dumps(data_, ensure_ascii=False, indent=2)
