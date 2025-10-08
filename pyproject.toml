@@ -244,6 +244,9 @@ ignore_missing_imports = true
 # Usage: poe <task_name>
 
 [tool.poe.tasks]
+# Development
+cli.script = "scripts"
+
 # Linting & Formatting
 lint = "ruff check src tests"
 format = "ruff format src tests"

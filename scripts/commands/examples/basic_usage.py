@@ -13,7 +13,6 @@ from py_clean_cli import command, CommandArgsModel
 LOGGING_MANAGER  = LoggingManager()
 LOGGER = getLogger(__name__)
 
-
 @command(name="basic", help_text="Demonstração de uso básico.")
 @dataclass
 class BasicCommand(CommandArgsModel):
