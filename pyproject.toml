@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 # 📦 BUILD SYSTEM
 # ============================================================================
 # Uses setuptools with setuptools-scm for automatic versioning from Git tags
@@ -13,8 +13,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "py-ia-rom-logger"
-dynamic = ["version"]  # Version automatically managed by setuptools-scm
-description = "Python project description"
+dynamic = ["version"]
+description = "Library for interactive logging in Python projects using Textual and Rich."
 readme = "docs/README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
@@ -23,7 +23,10 @@ authors = [
 ]
 keywords = [
   "python",
-  "automation",
+  "logging",
+  "textual",
+  "interactive",
+  "markdown",
   "library"
 ]
 classifiers = [
@@ -35,16 +38,19 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-# Core dependencies for production
 dependencies = [
-  # Add your production dependencies here
-  # "requests>=2.31.0",
-  # "pydantic>=2.0.0",
+  "textual>=0.41.0",
+  "rich>=13.0.0",
+  "pydantic>=2.0.0",
+  "python-json-logger>=3.3.0",
+  "tzdata>=2025.2",
 ]
 
-# Development dependencies
 [project.optional-dependencies]
 dev = [
+  # Development
+  "py-clean-cli @ git+https://github.com/Yharon/py-clean-cli.git",
+
   # Testing
   "pytest>=8.0.0",
   "pytest-cov>=4.1.0",

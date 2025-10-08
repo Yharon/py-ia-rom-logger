@@ -69,6 +69,7 @@ htmlcov/
 coverage.xml
 *.cover
 .hypothesis/
+docs/.mocks/
 
 # ============================================================================
 # 🔍 LINTING & TYPE CHECKING
