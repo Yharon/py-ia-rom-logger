@@ -1,22 +1,24 @@
+from dataclasses import asdict, dataclass, field
+from json import dumps as json_dumps
 from os import getenv
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from dataclasses import dataclass, field, asdict
-from json import dumps as json_dumps
 
 from dotenv import load_dotenv
 
-from .decorators import singleton
 from . import PROJECT_ROOT
+from .decorators import singleton
 
 
 def get_prod_env_static() -> bool:
-    env_path = Path(PROJECT_ROOT) / ".configs" / ".env"
+    """
+    Verifica se o ambiente é de produção.
+    """
+    env_path: Path = Path(PROJECT_ROOT) / "configs" / ".env"
     if env_path.exists():
         load_dotenv(env_path)
-        if getenv("ENV", "DEV").upper() == "PROD":
-            return True
-        return False
+        if getenv("ENV", "DEV").upper() != "PROD":
+            return False
     return True
 
 
@@ -26,7 +28,7 @@ def get_timezone() -> ZoneInfo:
     Obtém o fuso horário configurado na variável de ambiente TIMEZONE.
     Se não estiver definido, usa o fuso horário padrão "America/Sao_Paulo".
     """
-    tz_name = getenv("TIMEZONE", "America/Sao_Paulo")
+    tz_name: str = getenv("TIMEZONE", "America/Sao_Paulo")
     return ZoneInfo(tz_name)
 
 

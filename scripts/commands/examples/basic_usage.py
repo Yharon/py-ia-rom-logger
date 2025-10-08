@@ -2,16 +2,18 @@
 Exemplo básico de uso do RPA Custom Logger
 Demonstra todas as funcionalidades implementadas na Fase 1
 """
-from logging import getLogger, info, debug, warning, error, critical, exception
-from dataclasses import dataclass, field as dc_field
+from dataclasses import dataclass
+from dataclasses import field as dc_field
+from logging import Logger, critical, debug, error, exception, getLogger, info, warning
+from typing import Literal
 
-from simple_parsing import field
+from py_clean_cli import CommandArgsModel, command
+
 from py_ia_rom_logger import LoggingManager
-from py_clean_cli import command, CommandArgsModel
 
 
-LOGGING_MANAGER  = LoggingManager()
-LOGGER = getLogger(__name__)
+LOGGING_MANAGER: LoggingManager  = LoggingManager()
+LOGGER: Logger = getLogger(__name__)
 
 @command(name="basic", help_text="Demonstração de uso básico.")
 @dataclass
@@ -20,7 +22,7 @@ class BasicCommand(CommandArgsModel):
 
     destination_file: str = dc_field(
         default="logs",
-        metadata=dict(help="Diretório do arquivo de log.", required=False),
+        metadata={"help": "Diretório do arquivo de log.", "required": False},
         kw_only=True,
     )
 
@@ -28,17 +30,14 @@ class BasicCommand(CommandArgsModel):
         """
         Implementação do comando básico
         """
-        if self.verbose:
-            level = "DEBUG"
-        else:
-            level = "INFO"
+        level: Literal['DEBUG', 'INFO'] = "DEBUG" if self.verbose else "INFO"
         LOGGING_MANAGER.setup_logging(level=level)
 
         uso_basico_rpa_logger()
         if self.verbose:
             erro_nao_capturado()
 
-class CustomException(Exception):
+class CustomException(Exception):  # noqa: N818
     """
     Exceção personalizada para o RPA Logger.
     Pode ser usada para capturar erros específicos de automação.
