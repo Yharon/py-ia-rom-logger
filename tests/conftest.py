@@ -4,12 +4,49 @@ Provides common fixtures for mocking, test data, and setup/teardown.
 """
 
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
 import pytest
+
+
+# ============================================================================
+# Pytest Configuration Hooks
+# ============================================================================
+
+
+def pytest_configure(config):
+    """Configure cache directories dynamically from environment variables.
+
+    Uses RES_ROOT environment variable to set external cache locations.
+    Falls back to project-local cache if RES_ROOT is not set.
+
+    Args:
+        config: Pytest configuration object.
+    """
+    res_root = os.environ.get('RES_ROOT')
+
+    if res_root:
+        cache_base = Path(res_root) / 'cache' / 'py-ia-rom-logger'
+
+        # Pytest cache directory
+        cache_dir = cache_base / '.pytest_cache'
+        config.option.cache_dir = str(cache_dir)
+
+        # Coverage data file
+        coverage_file = cache_base / '.coverage'
+        os.environ['COVERAGE_FILE'] = str(coverage_file)
+
+        # Coverage HTML report directory
+        html_dir = cache_base / 'htmlcov'
+        os.environ['COVERAGE_HTML_DIR'] = str(html_dir)
+
+        # Coverage XML report file
+        xml_file = cache_base / 'coverage.xml'
+        os.environ['COVERAGE_XML_FILE'] = str(xml_file)
 
 
 # ============================================================================

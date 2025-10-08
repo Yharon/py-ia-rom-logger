@@ -111,6 +111,10 @@ target-version = "py312"
 # Line length (Black-compatible)
 line-length = 88
 
+# Cache directory (external to project)
+# Note: Configure via environment variable instead of hardcoding here:
+#   RUFF_CACHE_DIR="$RES_ROOT/cache/py-ia-rom-logger/.ruff_cache"
+
 # File/directory exclusions
 exclude = [
   ".git",
@@ -178,6 +182,9 @@ python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 
+# Cache directory configured dynamically via tests/conftest.py pytest_configure()
+# Uses RES_ROOT environment variable if available
+
 # Command-line options (applied automatically)
 addopts = [
   "--verbose",
@@ -199,6 +206,8 @@ markers = [
 # ============================================================================
 # 📊 COVERAGE CONFIGURATION
 # ============================================================================
+# Cache locations configured dynamically via tests/conftest.py pytest_configure()
+# Uses COVERAGE_FILE, COVERAGE_HTML_DIR, COVERAGE_XML_FILE environment variables
 
 [tool.coverage.run]
 source = ["src"]
@@ -224,15 +233,17 @@ exclude_lines = [
   "@abstractmethod",
 ]
 
-[tool.coverage.html]
-directory = "htmlcov"
-
 # ============================================================================
 # 🤖 MYPY - Type Checking
 # ============================================================================
+# Note: Mypy cache uses hardcoded path. To make portable, set MYPY_CACHE_DIR
+# environment variable or use wrapper script.
 
 [tool.mypy]
 python_version = "3.12"
+# Cache directory (external to project)
+# Note: Configure via environment variable instead of hardcoding here:
+#   MYPY_CACHE_DIR="$RES_ROOT/cache/py-ia-rom-logger/.mypy_cache"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false  # Set to true for strict type checking
