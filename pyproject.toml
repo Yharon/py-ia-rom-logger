@@ -259,23 +259,33 @@ ignore_missing_imports = true
 cli.script = "scripts"
 
 # Linting & Formatting
-lint = "ruff check src tests"
-format = "ruff format src tests"
-fix = "ruff check --fix src tests"
+[tool.poe.tasks.lint]
+cmd = "python -m scripts.commands.run_with_env ruff check src tests"
+
+[tool.poe.tasks.format]
+cmd = "python -m scripts.commands.run_with_env ruff format src tests"
+
+[tool.poe.tasks.fix]
+cmd = "python -m scripts.commands.run_with_env ruff check --fix src tests"
 
 # Testing
-test = "pytest"
-test-cov = "pytest --cov"
-test-fast = "pytest -m 'not slow'"
+[tool.poe.tasks.test]
+cmd = "python -m scripts.commands.run_with_env pytest"
+
+[tool.poe.tasks.test-cov]
+cmd = "python -m scripts.commands.run_with_env pytest --cov"
+
+[tool.poe.tasks.test-fast]
+cmd = "python -m scripts.commands.run_with_env pytest -m 'not slow'"
 
 # Type checking
-typecheck = "mypy src"
+[tool.poe.tasks.typecheck]
+cmd = "python -m scripts.commands.run_with_env mypy src"
 
 # Combined checks (run before commit)
 check = ["lint", "typecheck", "test"]
 
-# Clean build artifacts
-clean = """
-  rm -rf build dist *.egg-info .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
-"""
+# Clean build artifacts (local + external cache)
+[tool.poe.tasks.clean]
+cmd = "python -m scripts.commands.clean_cache"
 
