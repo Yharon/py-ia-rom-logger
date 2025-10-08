@@ -68,7 +68,7 @@ class FileLogModel(LogModel):
     def strip_emojis(self, text: str) -> str:
         """Remove emojis and decorative Unicode symbols from text.
 
-        Essential for RPA systems integrating with legacy platforms
+        Essential for systems integrating with legacy platforms
         that don't support emojis or special Unicode characters.
 
         Args:

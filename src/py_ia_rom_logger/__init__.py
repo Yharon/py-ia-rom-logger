@@ -1,4 +1,4 @@
-"""Custom logging library for RPA projects with Rich console and JSON file output.
+"""Custom logging library for Python projects with Rich console and JSON file output.
 
 Provides structured logging with:
 - Rich-formatted console output with colors and styling

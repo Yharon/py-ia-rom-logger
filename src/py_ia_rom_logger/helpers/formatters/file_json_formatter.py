@@ -14,7 +14,7 @@ from .tracebacks.compact_traceback_formatter import CompactTracebackFormatter
 
 
 class SafeJsonFormatter(JsonFormatter):
-    """JSON formatter with sanitization for RPA systems.
+    """JSON formatter with sanitization for legacy systems.
 
     Extends JsonFormatter with:
     - Automatic emoji removal for legacy system compatibility
@@ -53,7 +53,7 @@ class SafeJsonFormatter(JsonFormatter):
     def add_fields(self, log_record: dict, record: Any, message_dict: dict) -> None:
         """Add custom fields to JSON log record.
 
-        Overrides base method to inject RPA-specific functionality:
+        Overrides base method to inject custom functionality:
         - Removes placeholders from main message
         - Injects structured arguments in separate field
         - Sanitizes all strings in the log
