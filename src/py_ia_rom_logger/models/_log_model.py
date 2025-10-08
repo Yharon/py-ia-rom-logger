@@ -1,7 +1,11 @@
-from re import compile as re_compile, VERBOSE as re_VERBOSE, Pattern as re_Pattern
+from collections.abc import Mapping, Sequence
+from dataclasses import asdict as dataclasses_asdict
+from dataclasses import dataclass, field, is_dataclass
 from functools import cached_property
-from dataclasses import dataclass, field, is_dataclass, asdict as dataclasses_asdict
-from typing import Any, Mapping, Sequence
+from re import VERBOSE
+from re import Pattern as re_Pattern
+from re import compile as re_compile
+from typing import Any
 
 from rich.theme import Theme
 
@@ -45,12 +49,12 @@ class LogModel:
                 (?:\.(?:\d+|\*))?       # precisão decimal (para floats)
                 [bcdeEfFgGnosxXrs%]     # especificador de tipo final
             """,
-            re_VERBOSE,
+            VERBOSE,
         ),
     )
 
     @cached_property
-    def level_map(self):
+    def level_map(self) -> dict[str, str]:
         return dict(map(lambda k: (k, k[:4]), self.LOG_LEVELS))
 
     def remove_placeholders(self, text: str) -> str:

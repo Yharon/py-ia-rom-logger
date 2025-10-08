@@ -16,7 +16,7 @@ O formatador é especialmente útil para:
 
 Examples
 --------
->>> from rpa_logger.helpers.formatters import SafeJsonFormatter
+>>> from py_ia_rom_logger.helpers.formatters import SafeJsonFormatter
 >>> import logging
 >>>
 >>> # Configuração básica
@@ -130,7 +130,7 @@ class SafeJsonFormatter(JsonFormatter):
             max_frames=kwargs.pop("max_frames", 8)
         )
 
-    def _sanitize_str(self, txt: str) -> str:
+    def _sanitize_str(self, txt_: str) -> str:
         """
         Sanitiza string removendo emojis e garantindo encoding UTF-8.
 
@@ -158,7 +158,7 @@ class SafeJsonFormatter(JsonFormatter):
         'Erro crítico '
         """
         # Remove emojis primeiro
-        txt = self._file_model.strip_emojis(txt)
+        txt: str = self._file_model.strip_emojis(txt_)
         # Garante encoding UTF-8 com escape de caracteres problemáticos
         return txt.encode("utf-8", "backslashreplace").decode("utf-8")
 

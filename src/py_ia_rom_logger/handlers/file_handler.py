@@ -1,8 +1,8 @@
 import logging
 from enum import Enum
 
-from py_ia_rom_logger.services import FileManagerService
 from py_ia_rom_logger.helpers.formatters import SafeJsonFormatter
+from py_ia_rom_logger.services import FileManagerService
 
 
 class AvailableFileFormatters(Enum):

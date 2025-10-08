@@ -3,15 +3,15 @@ from enum import Enum
 
 from rich.console import ConsoleRenderable
 from rich.logging import RichHandler
-from rich.text import Text
 from rich.panel import Panel
+from rich.text import Text
 
 from py_ia_rom_logger.config import SETTINGS
-from py_ia_rom_logger.models import ConsoleLogModel
 from py_ia_rom_logger.helpers.formatters import (
     AbstractConsoleCustomFormatter,
     RichFormatter,
 )
+from py_ia_rom_logger.models import ConsoleLogModel
 
 
 class AvailableFormatters(Enum):

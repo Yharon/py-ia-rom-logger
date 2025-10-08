@@ -1,14 +1,15 @@
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from platform import platform
-from socket import gethostname
 from getpass import getuser
 from json import dumps as json_dumps
+from platform import platform
+from socket import gethostname
+from typing import Any
 
 from py_ia_rom_logger.config import SETTINGS
 
 
-def now():
+def now() -> datetime:
     return datetime.now(SETTINGS.TZ)
 
 
@@ -28,7 +29,7 @@ class SystemInfoHelper:
     platform: str = field(default_factory=platform)
     timestamp: datetime = field(default_factory=now)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"SystemInfo("
             f"hostname='{self.hostname}', "
@@ -38,7 +39,7 @@ class SystemInfoHelper:
             f")"
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     @property
@@ -49,7 +50,7 @@ class SystemInfoHelper:
         str
             Representação JSON das informações do sistema.
         """
-        data_ = asdict(self)
+        data_: dict[str, Any] = asdict(self)
         # timestamp is not serializable, convert manually
         data_["timestamp"] = self.timestamp.isoformat()
         return json_dumps(data_, ensure_ascii=False, indent=2)

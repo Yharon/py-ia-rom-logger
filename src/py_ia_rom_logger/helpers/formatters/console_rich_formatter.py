@@ -6,24 +6,23 @@ visual das informações.
 
 Examples
 --------
->>> from rpa_logger.formatters.rich_formatter import RichFormatter
+>>> from py_ia_rom_logger.formatters.rich_formatter import RichFormatter
 >>> formatter = RichFormatter()
 >>> handler.setFormatter(formatter)
 """
-
 import logging
 from types import TracebackType
 
 from rich.console import ConsoleRenderable, Group
-from rich.markup import escape
-from rich.text import Text
-from rich.panel import Panel
 from rich.json import JSON
+from rich.markup import escape
+from rich.panel import Panel
+from rich.text import Text
 
 from py_ia_rom_logger.models import ConsoleLogModel
-from .tracebacks.console_rich_traceback_formatter import TracebackRichFormatter
 
 from . import AbstractConsoleCustomFormatter
+from .tracebacks.console_rich_traceback_formatter import TracebackRichFormatter
 
 
 class RichFormatter(AbstractConsoleCustomFormatter):
@@ -40,7 +39,7 @@ class RichFormatter(AbstractConsoleCustomFormatter):
     >>> handler.setFormatter(formatter)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self._console_model = ConsoleLogModel()
