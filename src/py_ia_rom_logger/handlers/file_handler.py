@@ -1,5 +1,7 @@
 import logging
 from enum import Enum
+from pathlib import Path
+from typing import ClassVar
 
 from py_ia_rom_logger.helpers.formatters import SafeJsonFormatter
 from py_ia_rom_logger.services import FileManagerService
@@ -22,7 +24,9 @@ class AvailableFileFormatters(Enum):
 class JsonCustomFileHandler(logging.FileHandler):
     """Custom file handler with JSON formatting and rotation."""
 
-    _file_manager = FileManagerService()
+    # 🏗️ Architecture: Class-level attributes shared across instances
+    _file_manager: ClassVar[FileManagerService] = FileManagerService()
+    _formatter: ClassVar[SafeJsonFormatter | None] = None
 
     def __init__(self, **kwargs):
         """Initialize JsonCustomFileHandler.
@@ -65,7 +69,7 @@ class JsonCustomFileHandler(logging.FileHandler):
         Returns:
             str: Complete path to log file.
         """
-        filename = self._file_manager.FILE_LOG.create_log_file_name()
-        file_path = self._file_manager.BACKUP_LOG_DIR / filename
+        filename: str = self._file_manager.FILE_LOG.create_log_file_name()
+        file_path: Path = self._file_manager.BACKUP_LOG_DIR / filename
 
         return str(file_path)
