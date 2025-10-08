@@ -1,10 +1,10 @@
+import contextlib
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from py_ia_rom_logger.config import SETTINGS
 from py_ia_rom_logger.helpers.system_info_helper import SystemInfoHelper
 from py_ia_rom_logger.models import FileLogModel
-
-from py_ia_rom_logger.config import SETTINGS
 
 
 @dataclass
@@ -38,27 +38,25 @@ class FileManagerService:
             return
 
         # List files sorted by modification time
-        files = sorted(
+        files: list[Path] = sorted(
             self.BACKUP_LOG_DIR.glob("*.log"), key=lambda f: f.stat().st_mtime
         )
 
         # Remove excess files
         if len(files) >= SETTINGS.MAX_FILES:
-            files_to_remove = len(files) - SETTINGS.MAX_FILES + 1
-            self._delete_files(files, files_to_remove)
+            files_to_remove_: int = int(len(files) - SETTINGS.MAX_FILES + 1)
+            self._delete_files(files, files_to_remove_)
 
-    def _delete_files(self, files: list[Path], qtd: int) -> None:
+    def _delete_files(self, files: list[Path], qtd_to_remove: int) -> None:
         """Delete first N files from list.
 
         Args:
             files: List of file paths to delete from.
-            qtd: Quantity of files to delete.
+            qtd_to_remove: Quantity of files to delete.
         """
-        for file_path in files[:qtd]:
-            try:
+        for file_path in files[:qtd_to_remove]:
+            with contextlib.suppress(OSError):
                 file_path.unlink()
-            except OSError:
-                pass
 
     def _setup_log_dirs(self) -> None:
         """Set up log directory structure.
@@ -66,7 +64,7 @@ class FileManagerService:
         Creates dated subdirectories for log organization.
         """
         # Directory for daily logs
-        date_format = self.SYS_INFO.timestamp.strftime(self.FORMAT_LOG_DIR)
+        date_format: str = self.SYS_INFO.timestamp.strftime(self.FORMAT_LOG_DIR)
 
         self.BACKUP_LOG_DIR = SETTINGS.LOG_DIR / date_format
         self.BACKUP_LOG_DIR.mkdir(parents=True, exist_ok=True)

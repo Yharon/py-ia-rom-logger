@@ -4,18 +4,18 @@ Coordinates all handlers and logging system configurations
 using the Singleton pattern.
 """
 
-import threading
 import logging
 import sys
+import threading
 from dataclasses import dataclass, field
-from typing import Optional
+from types import TracebackType
 
 from py_ia_rom_logger.config.decorators import singleton
 from py_ia_rom_logger.handlers import (
-    ConsoleHandler,
-    AvailableFormatters,
-    JsonCustomFileHandler,
     AvailableFileFormatters,
+    AvailableFormatters,
+    ConsoleHandler,
+    JsonCustomFileHandler,
 )
 
 
@@ -41,15 +41,30 @@ def _install_threading_excepthook(logger_: logging.Logger) -> None:
         logger_: Logger instance to capture thread exceptions.
     """
     if hasattr(threading, "excepthook"):
-        def _thread_hook(args: threading.ExceptHookArgs):  # type: ignore[attr-defined]
+        def _thread_hook(args: threading.ExceptHookArgs) -> None:  # type: ignore[attr-defined]
             name_ = args.thread.name if args.thread else "MainThread"
             msg = "Unhandled exception"
             if issubclass(args.exc_type, KeyboardInterrupt):
                 msg = "Keyboard interrupt exception"
+            # Prepare exc_info with proper typing
+            exc_info_value: (
+                tuple[type[BaseException], BaseException, TracebackType | None]
+                | tuple[None, None, None]
+            )
+            if args.exc_type is not None and args.exc_traceback is not None:
+                exc_info_value = (
+                    args.exc_type,
+                    args.exc_value if args.exc_value is not None else args.exc_type(),
+                    args.exc_traceback,
+                )
+            else:
+                exc_info_value = (None, None, None)
+
             logger_.critical(
                 f"{msg} in thread {name_}",
-                exc_info=(args.exc_type, args.exc_value, args.exc_traceback),  # type: ignore[attr-defined]
+                exc_info=exc_info_value,
             )
+
         threading.excepthook = _thread_hook
 
 
@@ -116,7 +131,7 @@ class LoggingManager:
         _install_sys_excepthook(self.LOGGER)
         _install_threading_excepthook(self.LOGGER)
 
-    def get_logger(self, name: Optional[str] = None) -> logging.Logger:
+    def get_logger(self, name: str | None = None) -> logging.Logger:
         """Get configured logger instance.
 
         Args:
