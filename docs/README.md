@@ -156,7 +156,7 @@ manager.setup_logging(
 
 ### Log File Structure
 
-```
+```bash
 logs/
 ├── 2025-01/
 │   ├── 15/
@@ -204,7 +204,7 @@ With exceptions:
 
 ### Module Overview
 
-```
+```bash
 py_ia_rom_logger/
 ├── config/              # Configuration management
 │   ├── config.py       # Settings class with env variables
@@ -290,7 +290,7 @@ open htmlcov/index.html
 
 ### Test Structure
 
-```
+```bash
 tests/
 ├── conftest.py                 # Shared fixtures
 ├── test_config/               # Configuration tests
@@ -347,7 +347,7 @@ poe clean
 
 Follow conventional commits format:
 
-```
+```bash
 feat: add new feature
 fix: fix bug in logger
 docs: update README
@@ -368,9 +368,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Yharon Coutinho**
 
-- Email: coutinho@ia-rom.com
+- Email: <coutinho@ia-rom.com>
 - GitHub: [@Yharon](https://github.com/Yharon)
-- Organization: IA-ROM
+- Organization: CORE
 
 ---
 
