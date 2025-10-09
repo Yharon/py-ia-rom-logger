@@ -69,6 +69,91 @@ pip install -e .
 
 ---
 
+## 🛠️ Development Setup
+
+### Prerequisites
+
+- Python ≥ 3.12
+- direnv installed: `sudo apt install direnv`
+- Environment variables configured in `~/.bashrc`:
+  ```bash
+  export DEV_ROOT="$HOME/dev"
+  export RES_ROOT="$HOME/resources"
+  export RES_ENVS="$RES_ROOT/python-venvs"
+  export CONTEXTS_DIR="$DEV_ROOT/contexts/claude"
+
+  # direnv hook
+  eval "$(direnv hook bash)"
+  ```
+
+### Setup Development Environment
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Yharon/py-ia-rom-logger.git
+   ```
+
+2. **Navigate to project (direnv auto-activates):**
+   ```bash
+   cd py-ia-rom-logger
+   direnv allow
+   ```
+
+That's it! **direnv automatically:**
+- ✅ Activates Python virtual environment
+- ✅ Creates external cache symlinks (`$RES_ROOT/cache/py-ia-rom-logger/`)
+- ✅ Exports all environment variables
+- ✅ Loads project `.env` file
+
+### Quick Navigation
+
+**Use the `work` function (if configured):**
+```bash
+work py-ia-rom-logger  # Navigate + activate in one command
+```
+
+**Or navigate manually:**
+```bash
+cd ~/dev/projects/libs/py-ia-rom-logger
+# Environment is automatically loaded by direnv
+```
+
+### Run Development Tasks
+
+```bash
+# Run tests (direct commands, no wrappers needed)
+pytest              # Run all tests
+pytest -v           # Verbose output
+poe test           # Or use Poe task runner
+
+# Code quality
+ruff check .        # Linting
+ruff format .       # Formatting
+mypy src           # Type checking
+
+# Combined checks
+poe check          # lint + typecheck + test
+```
+
+### External Cache Structure
+
+All cache files are stored outside the project in `$RES_ROOT/cache/py-ia-rom-logger/`:
+
+```
+$RES_ROOT/cache/py-ia-rom-logger/
+├── .pytest_cache/      # Pytest cache
+├── .mypy_cache/        # Mypy cache
+├── .ruff_cache/        # Ruff cache
+├── htmlcov/            # Coverage HTML reports
+├── pycache/            # Python bytecode cache
+├── .coverage           # Coverage data
+└── coverage.xml        # Coverage XML report
+```
+
+Symlinks in the project directory point to these external locations.
+
+---
+
 ## 🚀 Quick Start
 
 ### Basic Usage
