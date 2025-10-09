@@ -101,8 +101,8 @@ pip install -e .
 
 That's it! **direnv automatically:**
 - ✅ Activates Python virtual environment
-- ✅ Creates external cache symlinks (`$RES_ROOT/cache/py-ia-rom-logger/`)
-- ✅ Exports all environment variables
+- ✅ Configures external cache via environment variables
+- ✅ Exports all project environment variables
 - ✅ Loads project `.env` file
 
 ### Quick Navigation
@@ -150,7 +150,7 @@ $RES_ROOT/cache/py-ia-rom-logger/
 └── coverage.xml        # Coverage XML report
 ```
 
-Symlinks in the project directory point to these external locations.
+Tools automatically use these locations via environment variables (`PYTEST_CACHE_DIR`, `MYPY_CACHE_DIR`, etc.), keeping the project directory clean.
 
 ---
 
