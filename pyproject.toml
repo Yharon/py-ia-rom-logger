@@ -111,10 +111,6 @@ target-version = "py312"
 # Line length (Black-compatible)
 line-length = 88
 
-# Cache directory (external to project)
-# Note: Configure via environment variable instead of hardcoding here:
-#   RUFF_CACHE_DIR="$RES_ROOT/cache/py-ia-rom-logger/.ruff_cache"
-
 # File/directory exclusions
 exclude = [
   ".git",
@@ -182,9 +178,6 @@ python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 
-# Cache directory configured dynamically via tests/conftest.py pytest_configure()
-# Uses RES_ROOT environment variable if available
-
 # Command-line options (applied automatically)
 addopts = [
   "--verbose",
@@ -206,8 +199,6 @@ markers = [
 # ============================================================================
 # 📊 COVERAGE CONFIGURATION
 # ============================================================================
-# Cache locations configured dynamically via tests/conftest.py pytest_configure()
-# Uses COVERAGE_FILE, COVERAGE_HTML_DIR, COVERAGE_XML_FILE environment variables
 
 [tool.coverage.run]
 source = ["src"]
@@ -236,14 +227,9 @@ exclude_lines = [
 # ============================================================================
 # 🤖 MYPY - Type Checking
 # ============================================================================
-# Note: Mypy cache uses hardcoded path. To make portable, set MYPY_CACHE_DIR
-# environment variable or use wrapper script.
 
 [tool.mypy]
 python_version = "3.12"
-# Cache directory (external to project)
-# Note: Configure via environment variable instead of hardcoding here:
-#   MYPY_CACHE_DIR="$RES_ROOT/cache/py-ia-rom-logger/.mypy_cache"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false  # Set to true for strict type checking
@@ -260,32 +246,34 @@ cli.script = "scripts"
 
 # Linting & Formatting
 [tool.poe.tasks.lint]
-cmd = "python -m scripts.commands.run_with_env ruff check src tests"
+cmd = "ruff check src tests"
 
 [tool.poe.tasks.format]
-cmd = "python -m scripts.commands.run_with_env ruff format src tests"
+cmd = "ruff format src tests"
 
 [tool.poe.tasks.fix]
-cmd = "python -m scripts.commands.run_with_env ruff check --fix src tests"
+cmd = "ruff check --fix src tests"
 
 # Testing
 [tool.poe.tasks.test]
-cmd = "python -m scripts.commands.run_with_env pytest"
+cmd = "pytest"
 
 [tool.poe.tasks.test-cov]
-cmd = "python -m scripts.commands.run_with_env pytest --cov"
+cmd = "pytest --cov"
 
 [tool.poe.tasks.test-fast]
-cmd = "python -m scripts.commands.run_with_env pytest -m 'not slow'"
+cmd = "pytest -m 'not slow'"
 
 # Type checking
 [tool.poe.tasks.typecheck]
-cmd = "python -m scripts.commands.run_with_env mypy src"
+cmd = "mypy src"
 
 # Combined checks (run before commit)
-check = ["lint", "typecheck", "test"]
+[tool.poe.tasks.check]
+sequence = ["lint", "typecheck", "test"]
+help = "Run all checks before commit"
 
-# Clean build artifacts (local + external cache)
+# Clean cache (removes symlinked cache directories)
 [tool.poe.tasks.clean]
-cmd = "python -m scripts.commands.clean_cache"
+shell = "rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage coverage.xml && echo 'Cache cleaned (symlinks removed)'"
 

@@ -4,7 +4,6 @@ Provides common fixtures for mocking, test data, and setup/teardown.
 """
 
 import logging
-import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -18,35 +17,28 @@ import pytest
 # ============================================================================
 
 
-def pytest_configure(config):
-    """Configure cache directories dynamically from environment variables.
+# def pytest_configure(config):
+#     """Configure cache directories dynamically from environment variables.
 
-    Uses RES_ROOT environment variable to set external cache locations.
-    Falls back to project-local cache if RES_ROOT is not set.
+#     Uses RES_ROOT environment variable to set external cache locations.
+#     Falls back to project-local cache if RES_ROOT is not set.
 
-    Args:
-        config: Pytest configuration object.
-    """
-    res_root = os.environ.get('RES_ROOT')
+#     Note: Cache directories are injected via command-line arguments by
+#     run_with_env.py, so this hook only sets environment variables for
+#     coverage.py to use.
 
-    if res_root:
-        cache_base = Path(res_root) / 'cache' / 'py-ia-rom-logger'
+#     Args:
+#         config: Pytest configuration object.
+#     """
+#     res_root = os.environ.get('RES_ROOT')
 
-        # Pytest cache directory
-        cache_dir = cache_base / '.pytest_cache'
-        config.option.cache_dir = str(cache_dir)
+#     if res_root:
+#         cache_base = Path(res_root) / 'cache' / 'py-ia-rom-logger'
+#         cache_base.mkdir(parents=True, exist_ok=True)
 
-        # Coverage data file
-        coverage_file = cache_base / '.coverage'
-        os.environ['COVERAGE_FILE'] = str(coverage_file)
-
-        # Coverage HTML report directory
-        html_dir = cache_base / 'htmlcov'
-        os.environ['COVERAGE_HTML_DIR'] = str(html_dir)
-
-        # Coverage XML report file
-        xml_file = cache_base / 'coverage.xml'
-        os.environ['COVERAGE_XML_FILE'] = str(xml_file)
+#         # Coverage data file (used by coverage.py via COVERAGE_FILE env var)
+#         coverage_file = cache_base / '.coverage'
+#         os.environ['COVERAGE_FILE'] = str(coverage_file)
 
 
 # ============================================================================
