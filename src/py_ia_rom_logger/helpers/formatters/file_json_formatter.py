@@ -36,6 +36,28 @@ class SafeJsonFormatter(JsonFormatter):
         self._file_model = FileLogModel()
         self._tb_formatter = CompactTracebackFormatter(max_frames=max_frames)
 
+    def format(self, record: Any) -> str:
+        """Format log record as JSON with emoji sanitization.
+
+        Overrides parent format() to apply emoji sanitization to the
+        final JSON string, ensuring all emojis (including those in
+        customargs) are removed for legacy system compatibility.
+
+        This approach is highly efficient as it performs a single
+        regex operation on the serialized JSON string, rather than
+        recursively sanitizing nested data structures.
+
+        Args:
+            record: Python LogRecord object to format.
+
+        Returns:
+            str: JSON-formatted log string with emojis removed.
+        """
+        # Get JSON string from parent formatter
+        json_str = super().format(record)
+        # Sanitize emojis from the entire JSON string
+        return self._file_model.strip_emojis(json_str)
+
     def _sanitize_str(self, txt_: str) -> str:
         """Sanitize string by removing emojis and ensuring UTF-8 encoding.
 

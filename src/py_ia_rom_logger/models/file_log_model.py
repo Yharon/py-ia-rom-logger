@@ -39,8 +39,13 @@ class FileLogModel(LogModel):
             "\U0001f300-\U0001f5ff"  # symbols & miscellaneous pictographs
             "\U0001f680-\U0001f6ff"  # transport & map symbols
             "\U0001f1e0-\U0001f1ff"  # flags (regional indicator symbols)
+            "\U0001f900-\U0001f9ff"  # supplemental symbols and pictographs
+            "\U0001fa00-\U0001fa6f"  # chess symbols
+            "\U0001fa70-\U0001faff"  # symbols and pictographs extended-A
             "\u2600-\u26ff"  # miscellaneous symbols (weather, zodiac, etc.)
             "\u2700-\u27bf"  # dingbats (decorative symbols)
+            "\u2300-\u23ff"  # miscellaneous technical
+            "\u2b50"  # star
             "]+",
             flags=re_UNICODE,
         ),

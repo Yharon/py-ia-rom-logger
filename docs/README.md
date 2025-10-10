@@ -76,6 +76,7 @@ pip install -e .
 - Python ≥ 3.12
 - direnv installed: `sudo apt install direnv`
 - Environment variables configured in `~/.bashrc`:
+
   ```bash
   export DEV_ROOT="$HOME/dev"
   export RES_ROOT="$HOME/resources"
@@ -89,17 +90,20 @@ pip install -e .
 ### Setup Development Environment
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/Yharon/py-ia-rom-logger.git
    ```
 
 2. **Navigate to project (direnv auto-activates):**
+
    ```bash
    cd py-ia-rom-logger
    direnv allow
    ```
 
 That's it! **direnv automatically:**
+
 - ✅ Activates Python virtual environment
 - ✅ Configures external cache via environment variables
 - ✅ Exports all project environment variables
@@ -108,11 +112,13 @@ That's it! **direnv automatically:**
 ### Quick Navigation
 
 **Use the `work` function (if configured):**
+
 ```bash
 work py-ia-rom-logger  # Navigate + activate in one command
 ```
 
 **Or navigate manually:**
+
 ```bash
 cd ~/dev/projects/libs/py-ia-rom-logger
 # Environment is automatically loaded by direnv
@@ -139,7 +145,7 @@ poe check          # lint + typecheck + test
 
 All cache files are stored outside the project in `$RES_ROOT/cache/py-ia-rom-logger/`:
 
-```
+```bash
 $RES_ROOT/cache/py-ia-rom-logger/
 ├── .pytest_cache/      # Pytest cache
 ├── .mypy_cache/        # Mypy cache

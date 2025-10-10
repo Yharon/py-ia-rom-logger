@@ -3,7 +3,6 @@
 from datetime import datetime
 
 import pytest
-
 from py_ia_rom_logger.models.file_log_model import FileLogModel
 
 
@@ -65,7 +64,7 @@ class TestFileLogModel:
         """Test strip_emojis handles None input."""
         model = FileLogModel()
 
-        result = model.strip_emojis(None)
+        result = model.strip_emojis(None) # type: ignore
 
         assert result == ""
 

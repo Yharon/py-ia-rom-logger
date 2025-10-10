@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 
 import pytest
-
 from py_ia_rom_logger.models._log_model import CustomThemes, LogModel
 
 
@@ -133,7 +132,7 @@ class TestLogModel:
         model = LogModel()
 
         circular = {"self": None}
-        circular["self"] = circular
+        circular["self"] = circular # type: ignore
 
         # Should not raise RecursionError
         result = model.jsonable(circular)

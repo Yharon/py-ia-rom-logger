@@ -155,7 +155,7 @@ class CustomThemes:
         default_factory=lambda: Theme(
             {
                 "debug": "blue",
-                "info": "green",
+                "info": "bright_white",
                 "warning": "yellow",
                 "error": "red",
                 "critical": "bold red",
@@ -171,9 +171,9 @@ class CustomThemes:
                 # DEBUG: muted colors for low priority
                 "logging.level.DEBUG": "gray35",
                 "logging.message.DEBUG": "bright_black",
-                # INFO: green tones, dark level, bright message
-                "logging.level.INFO": "green3",
-                "logging.message.INFO": "green4",
+                # INFO: bright white tones for clarity and distinction
+                "logging.level.INFO": "bold white",
+                "logging.message.INFO": "bright_white",
                 # WARNING: yellow tones with emphasis
                 "logging.level.WARNING": "bold white on yellow3",
                 "logging.message.WARNING": "yellow2",
