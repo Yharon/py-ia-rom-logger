@@ -50,6 +50,7 @@ dependencies = [
 dev = [
   # Development
   "py-clean-cli @ git+https://github.com/Yharon/py-clean-cli.git",
+  "debugpy>=1.8.0",
 
   # Testing
   "pytest>=8.0.0",
