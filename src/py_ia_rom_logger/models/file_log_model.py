@@ -1,7 +1,8 @@
-from re import compile as re_compile, UNICODE as re_UNICODE, Pattern as re_Pattern
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
+from re import UNICODE as re_UNICODE  # noqa: N811
+from re import Pattern as re_Pattern
+from re import compile as re_compile
 
 from py_ia_rom_logger.config import SETTINGS
 
@@ -51,7 +52,7 @@ class FileLogModel(LogModel):
         ),
     )
 
-    def create_log_file_name(self, date_: Optional[datetime] = None) -> str:
+    def create_log_file_name(self, date_: datetime | None = None) -> str:
         """Create log filename based on defined format pattern.
 
         Args:

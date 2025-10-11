@@ -1,9 +1,9 @@
-from functools import cached_property
 from dataclasses import dataclass, field
+from functools import cached_property
 
 from rich.console import Console
 
-from . import LogModel, CustomThemes
+from . import CustomThemes, LogModel
 
 
 @dataclass
