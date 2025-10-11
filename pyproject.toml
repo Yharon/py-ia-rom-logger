@@ -186,8 +186,6 @@ addopts = [
   "--strict-config",
   "--cov=py_ia_rom_logger",
   "--cov-report=term-missing:skip-covered",
-  "--cov-report=html",
-  "--cov-report=xml",
 ]
 
 # Markers for test categorization
@@ -197,6 +195,9 @@ markers = [
   "unit: marks tests as unit tests",
 ]
 
+# Cache directory (respects PYTEST_CACHE_DIR environment variable)
+cache_dir = ".pytest_cache"
+
 # ============================================================================
 # 📊 COVERAGE CONFIGURATION
 # ============================================================================
@@ -204,6 +205,7 @@ markers = [
 [tool.coverage.run]
 source = ["src"]
 branch = true
+data_file = ".coverage"  # Respects COVERAGE_FILE environment variable
 omit = [
   "*/tests/*",
   "*/test_*.py",
@@ -224,6 +226,12 @@ exclude_lines = [
   "if TYPE_CHECKING:",
   "@abstractmethod",
 ]
+
+[tool.coverage.html]
+directory = "htmlcov"  # Respects COVERAGE_HTML_DIR environment variable
+
+[tool.coverage.xml]
+output = "coverage.xml"  # Respects COVERAGE_XML_FILE environment variable
 
 # ============================================================================
 # 🤖 MYPY - Type Checking
@@ -257,13 +265,28 @@ cmd = "ruff check --fix src tests"
 
 # Testing
 [tool.poe.tasks.test]
-cmd = "pytest"
+shell = """
+pytest \
+  -o cache_dir="${PYTEST_CACHE_DIR:-.pytest_cache}" \
+  --cov-report=html:"${COVERAGE_HTML_DIR:-htmlcov}" \
+  --cov-report=xml:"${COVERAGE_XML_FILE:-coverage.xml}"
+"""
 
 [tool.poe.tasks.test-cov]
-cmd = "pytest --cov"
+shell = """
+pytest --cov \
+  -o cache_dir="${PYTEST_CACHE_DIR:-.pytest_cache}" \
+  --cov-report=html:"${COVERAGE_HTML_DIR:-htmlcov}" \
+  --cov-report=xml:"${COVERAGE_XML_FILE:-coverage.xml}"
+"""
 
 [tool.poe.tasks.test-fast]
-cmd = "pytest -m 'not slow'"
+shell = """
+pytest -m 'not slow' \
+  -o cache_dir="${PYTEST_CACHE_DIR:-.pytest_cache}" \
+  --cov-report=html:"${COVERAGE_HTML_DIR:-htmlcov}" \
+  --cov-report=xml:"${COVERAGE_XML_FILE:-coverage.xml}"
+"""
 
 # Type checking
 [tool.poe.tasks.typecheck]
