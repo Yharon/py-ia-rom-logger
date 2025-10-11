@@ -1,6 +1,6 @@
 from os import name as os_name
-from sys import path as sys_path
 from pathlib import Path
+from sys import path as sys_path
 
 
 PROJECT_ROOT = str(Path.cwd())
@@ -22,6 +22,6 @@ from .config import Settings
 SETTINGS = Settings(PROJECT_ROOT_=Path(PROJECT_ROOT), OS_WINDOWS=OS_WINDOWS)
 
 __all__ = [
-    "SETTINGS",
-    "OS_WINDOWS"
+    "OS_WINDOWS",
+    "SETTINGS"
 ]
