@@ -47,7 +47,7 @@ Modern logging solution designed for automation and Python projects, providing b
 ### From Git (Development)
 
 ```bash
-pip install git+https://github.com/Yharon/py-ia-rom-logger.git
+uv pip install git+https://github.com/Yharon/py-ia-rom-logger.git
 ```
 
 ### From Source
@@ -55,7 +55,7 @@ pip install git+https://github.com/Yharon/py-ia-rom-logger.git
 ```bash
 git clone https://github.com/Yharon/py-ia-rom-logger.git
 cd py-ia-rom-logger
-pip install -e .
+uv pip install -e .
 ```
 
 ### Dependencies
@@ -74,6 +74,7 @@ pip install -e .
 ### Prerequisites
 
 - Python ≥ 3.12
+- uv package manager: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - direnv installed: `sudo apt install direnv`
 - Environment variables configured in `~/.bashrc`:
 
@@ -150,6 +151,7 @@ $RES_ROOT/cache/py-ia-rom-logger/
 ├── .pytest_cache/      # Pytest cache
 ├── .mypy_cache/        # Mypy cache
 ├── .ruff_cache/        # Ruff cache
+├── .uv_cache/          # UV package manager cache
 ├── htmlcov/            # Coverage HTML reports
 ├── pycache/            # Python bytecode cache
 ├── .coverage           # Coverage data
@@ -404,7 +406,7 @@ git clone https://github.com/Yharon/py-ia-rom-logger.git
 cd py-ia-rom-logger
 
 # Install in editable mode with dev dependencies
-pip install -e ".[dev]"
+uv pip install -e ".[dev]"
 ```
 
 ### Development Tools
