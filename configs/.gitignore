@@ -93,6 +93,7 @@ dmypy.json
 
 # Cursor
 .cursor/
+.claude/
 
 # PyCharm
 .idea/
