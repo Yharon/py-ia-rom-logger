@@ -14,7 +14,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "py-ia-rom-logger"
 dynamic = ["version"]
-description = "Library for interactive logging in Python projects using Textual and Rich."
+description = "Professional logging library for Python projects with Rich console formatting and structured JSON file output."
 readme = "docs/README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
@@ -24,9 +24,9 @@ authors = [
 keywords = [
   "python",
   "logging",
-  "textual",
-  "interactive",
-  "markdown",
+  "rich",
+  "json",
+  "structured-logging",
   "library"
 ]
 classifiers = [
@@ -39,7 +39,6 @@ classifiers = [
 ]
 
 dependencies = [
-  "textual>=0.41.0",
   "rich>=13.0.0",
   "pydantic>=2.0.0",
   "python-json-logger>=3.3.0",

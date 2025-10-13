@@ -63,7 +63,6 @@ uv pip install -e .
 - Python ≥ 3.12
 - rich ≥ 13.0.0
 - python-json-logger ≥ 3.3.0
-- textual ≥ 0.41.0
 - pydantic ≥ 2.0.0
 - tzdata ≥ 2025.2
 
