@@ -1,0 +1,63 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🔧 Debug: Default (Listener)",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "justMyCode": false,
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "."
+        }
+      ],
+      "preLaunchTask": "debug-send: default"
+    },
+    {
+      "name": "🏗️ Debug: Custom (Listener)",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "justMyCode": false,
+      "subProcess": false,
+      "presentation": {
+        "hidden": false,
+        "group": "",
+        "order": 1
+      },
+      "redirectOutput": false,
+      "showReturnValue": false,
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder:Project}",
+          "remoteRoot": "."
+        }
+      ],
+      "preLaunchTask": "debug-send: custom"
+    },
+    {
+      "name": "🔌 Attach to Python Process (Manual)",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "justMyCode": false,
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "."
+        }
+      ]
+    }
+  ]
+}
