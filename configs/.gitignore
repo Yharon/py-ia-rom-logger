@@ -159,3 +159,13 @@ Desktop.ini
 temp/
 tmp/
 *.tmp
+
+# ============================================================================
+# 🔧 PERSONAL CONFIGURATIONS (managed via wsl-dev-environment)
+# ============================================================================
+# These files are symlinked from configs/project-configs/ in dev environment
+../.envrc
+../.vscode/launch.json
+../.vscode/tasks.json
+../scripts/__init__.py
+../scripts/__main__.py
